@@ -40,10 +40,16 @@ abstract  class Operations {
 		//list command	
 			case "ls" :
 			{
-				for(int i=1;i<len;i++)
+				if(len == 1)
+					ls("",currentDir);
+				
+				else
 				{
-					//System.out.println("listing ->"+currentDir.getName());
-					ls(inArray[i],currentDir);
+					for(int i=1;i<len;i++)
+					{
+						System.out.println("listing ->"+currentDir.getName());
+						ls(inArray[i],currentDir);
+					}
 				}
 				
 				return currentDir;
@@ -131,7 +137,7 @@ abstract  class Operations {
 	private static void ls(String path,Directory currentDir)
 	{
 		Directory dir = traverse(path,currentDir,0);
-
+		System.out.println(dir.getName());
 		if(dir != null)
 		{
 			Set<String> childName = dir.getChildList();
@@ -165,7 +171,7 @@ abstract  class Operations {
 			default :
 			{	
 				//child directory exist in current directory
-				if(dir.childDirectory.containsKey(dirName[0]))
+				if(dir.addChildDir(dirName[0]) == false)
 				{
 					// last directory name given in path parameter is already exist
 					if(length == 1)
@@ -184,7 +190,7 @@ abstract  class Operations {
 						//System.out.println(path+" s "+startPos+" cp "+childPath);
 						childDir = mkdir(childPath,childDir);
 						
-						dir.childDirectory.put(dirName[0], childDir);
+						dir.updateChildDir(dirName[0], childDir);
 						
 						return dir;
 					}
@@ -194,7 +200,7 @@ abstract  class Operations {
 				else if(length == 1)
 				{
 					Directory newChild = new Directory(dirName[0]);
-					dir.childDirectory.put(dirName[0], newChild);
+					dir.addChildDir(dirName[0]);
 					System.out.println("SUCC: CREATED");
 					return dir;
 				}
@@ -256,16 +262,17 @@ abstract  class Operations {
 		int length = dirName.length;
 		
 		Directory dir = currentDir;
-		
+		System.out.println("Traversing on Path -> "+path);
 		for(int i = 0;i< length-pos; i++)
 		{
+			System.out.println("Enter dirName ->"+dirName[i]+" "+dir.getName());
 			if(dirName[i].equals(""))
 			{
 				break;
 			}
 			else if(dirName[i].equals(".."))
 			{
-				System.out.println("geeting parent "+dir.getName()+" - "+dirName[i]);
+				System.out.println("getting parent of "+dir.getName()+" - "+dir.getParentDir());
 				if(dir.getParentDir() != null)
 				{
 					System.out.println("condtion");
@@ -290,6 +297,7 @@ abstract  class Operations {
 					dir = childDir;
 				}
 			}
+			System.out.println("Exit dirName ->"+dirName[i]+" "+dir.getName()+"  Child List"+dir.getChildList());
 		}
 		return dir;
 	}

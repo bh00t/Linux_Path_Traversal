@@ -5,9 +5,9 @@ import java.util.TreeMap;
 
 public class Directory{
 	
-	Directory parentDirectory;
-	String name;
-	TreeMap<String,Directory> childDirectory = new TreeMap<String,Directory>();
+	private Directory parentDirectory;
+	private String name;
+	private TreeMap<String,Directory> childDirectory = new TreeMap<String,Directory>();
 	
 	Directory(String name)
 	{
@@ -40,6 +40,12 @@ public class Directory{
 			this.childDirectory.put(name, dir);
 			return true;
 		}
+	}
+	
+	void updateChildDir(String childName, Directory childDir)
+	{
+		this.childDirectory.put(childName, childDir);
+
 	}
 	
 	boolean removeChildDir(String name)
