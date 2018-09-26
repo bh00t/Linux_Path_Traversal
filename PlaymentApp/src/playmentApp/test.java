@@ -15,9 +15,7 @@ public class test {
 		while(true)
 		{
 			input = br.readLine();
-			Operations.command(input,currentDir);
+			currentDir = Operations.command(input,currentDir);
 		}
-		
 	}
-
 }

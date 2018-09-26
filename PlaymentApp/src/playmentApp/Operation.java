@@ -68,7 +68,8 @@ abstract  class Operations {
 				{
 					for(int i=1;i<len;i++)
 					{
-					
+						//String testing = traverse(inArray[i],currentDir,1).getName();
+							//System.out.println("TESTING 1 ->"+testing);
 							currentDir = mkdir(inArray[i],currentDir);
 					}
 					
@@ -103,24 +104,19 @@ abstract  class Operations {
 				}
 				else
 				{
-					System.out.println("ERR: CANNOT RECOGNIZE INPUT1");
+					System.out.println("ERR: CANNOT RECOGNIZE INPUT");
 					return currentDir;
 				}
 				
 				default: 
 				{
-					System.out.println("ERR: CANNOT RECOGNIZE INPUT1");
+					System.out.println("ERR: CANNOT RECOGNIZE INPUT1->"+cmd);
 					return currentDir;
 				}
 		}
 	}
-	private static boolean validatePath(String[] inputArray)
-	{
-		//String
-		return false;
-	}
 	
-	
+	//method to change directory
 	private static Directory cd(String path,Directory currentDir)
 	{
 		Directory dir = traverse(path,currentDir,0);
@@ -137,7 +133,7 @@ abstract  class Operations {
 	private static void ls(String path,Directory currentDir)
 	{
 		Directory dir = traverse(path,currentDir,0);
-		System.out.println(dir.getName());
+		//System.out.println(dir.getName());
 		if(dir != null)
 		{
 			Set<String> childName = dir.getChildList();
@@ -156,62 +152,17 @@ abstract  class Operations {
 		String[] dirName = path.split("/");
 		int length = dirName.length;
 		
-		Directory dir = currentDir;
-			
-		switch(dirName[0])
+		Directory dir = traverse(path,currentDir,1);
+		if(dir != null)
 		{
-		//blank directory name error
-			case "":
-			case "..":
-			{
-				System.out.println("ERR: INVALID PATH");
-				return dir;
-			}
-			
-			default :
-			{	
-				//child directory exist in current directory
-				if(dir.addChildDir(dirName[0]) == false)
-				{
-					// last directory name given in path parameter is already exist
-					if(length == 1)
-					{
-						System.out.println("ERR: DIRECTORY ALREADY EXISTS");
-						return dir;
-					}
+			boolean status = dir.addChildDir(dirName[length-1]);
 
-					else
-					{
-						Directory childDir = dir.getChildDir(dirName[0]);
-						int startPos = path.indexOf(dirName[0]);
-						startPos+= dirName[0].length() + 1;
-						
-						String childPath = path.substring(startPos, path.length());
-						//System.out.println(path+" s "+startPos+" cp "+childPath);
-						childDir = mkdir(childPath,childDir);
-						
-						dir.updateChildDir(dirName[0], childDir);
-						
-						return dir;
-					}
-				}
-				// last directory name given in path parameter is not exist
-				//adding child directory
-				else if(length == 1)
-				{
-					Directory newChild = new Directory(dirName[0]);
-					dir.addChildDir(dirName[0]);
-					System.out.println("SUCC: CREATED");
-					return dir;
-				}
-				//directory name given in path parameter does not exist
-				else
-				{
-					System.out.println("ERR: INVALID PATH");
-					return dir;
-				}
-			}
-		}				
+			if(status)
+				System.out.println("Success created new");
+			else
+				System.out.println("ERR: DIRECTORY ALREADY EXISTS");
+		}
+		return currentDir;				
 	}
 	
 	private static String pwd(Directory currentDir)
@@ -228,13 +179,23 @@ abstract  class Operations {
 		return "PATH: "+absolutePath;
 	}
 	
-//	private static Directory rm(String path,Directory currentDir)
-//	{
-//		Directory dir = traverse(path,currentDir,1);
-//		
-//		if()
-//		return null;
-//	}
+	private static Directory rm(String path,Directory currentDir)
+	{
+		Directory dir = traverse(path,currentDir,0);
+
+		if(dir != null)
+		{
+			String dirName = dir.getName();
+			String currentDir_Path = pwd(currentDir);
+			String targetDir_Path = pwd(dir);
+			if(currentDir_Path.indexOf(targetDir_Path) == -1)
+			{
+				dir = dir.getParentDir();
+				dir.removeChildDir(dirName);
+			}
+		}
+		return currentDir;
+	}
 	
 	//remove current dir pattern from path parameter
 	private static String removeCurrentDir(String path)
@@ -263,6 +224,7 @@ abstract  class Operations {
 		
 		Directory dir = currentDir;
 		System.out.println("Traversing on Path -> "+path);
+		
 		for(int i = 0;i< length-pos; i++)
 		{
 			System.out.println("Enter dirName ->"+dirName[i]+" "+dir.getName());

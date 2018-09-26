@@ -24,7 +24,11 @@ public class Directory{
 	
 	Directory getChildDir(String name)
 	{
-		return this.childDirectory.get(name);
+		if(name.equals(".."))
+			return getParentDir();
+		
+		else
+			return this.childDirectory.get(name);
 	}
 	
 	boolean addChildDir(String name)
