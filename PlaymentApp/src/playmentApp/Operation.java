@@ -173,9 +173,11 @@ abstract  class Operations {
 			{
 				currentDir = currentDir.getParentDir();
 				System.out.println("pwd ->" + currentDir.getName());
-				absolutePath = currentDir.getName().concat(absolutePath);
+				absolutePath = currentDir.getName()+"/"+absolutePath;
 			}
 			
+		absolutePath = absolutePath.substring(1);
+		
 		return "PATH: "+absolutePath;
 	}
 	
