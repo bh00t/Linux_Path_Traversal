@@ -47,7 +47,7 @@ abstract  class Operations {
 				{
 					for(int i=1;i<len;i++)
 					{
-						System.out.println("listing ->"+currentDir.getName());
+						//System.out.println("listing ->"+currentDir.getName());
 						ls(inArray[i],currentDir);
 					}
 				}
@@ -62,7 +62,7 @@ abstract  class Operations {
 				if(len == 1)
 				{
 					System.out.println("ERR: mkdir: missing operand");
-					return currentDir;
+					//return currentDir;
 				}
 				else
 				{
@@ -70,11 +70,10 @@ abstract  class Operations {
 					{
 						//String testing = traverse(inArray[i],currentDir,1).getName();
 							//System.out.println("TESTING 1 ->"+testing);
-							currentDir = mkdir(inArray[i],currentDir);
+							mkdir(inArray[i],currentDir);
 					}
-					
-					return currentDir;
 				}
+				return currentDir;
 			}
 			
 			case "pwd" :
@@ -86,10 +85,20 @@ abstract  class Operations {
 			
 			case "rm" :
 				{
-					Directory root = new Directory("/");
-					System.gc();
-					System.out.println("SUCC: CLEARED: RESET TO ROOT");
-					return root;
+					if(len == 1)
+					{
+						System.out.println("ERR: rm: missing operand");
+					}
+					else
+					{
+						for(int i=1;i<len;i++)
+						{
+							//String testing = traverse(inArray[i],currentDir,1).getName();
+								//System.out.println("TESTING 1 ->"+testing);
+							rm(inArray[i],currentDir);
+						}
+					}
+					return currentDir;
 				}
 				
 			case "session" :
@@ -110,7 +119,7 @@ abstract  class Operations {
 				
 				default: 
 				{
-					System.out.println("ERR: CANNOT RECOGNIZE INPUT1->"+cmd);
+					System.out.println("ERR: CANNOT RECOGNIZE INPUT->"+cmd);
 					return currentDir;
 				}
 		}
@@ -168,11 +177,11 @@ abstract  class Operations {
 	private static String pwd(Directory currentDir)
 	{
 		String absolutePath = currentDir.getName();
-		System.out.println("pwd1 ->" + currentDir.getName());
+		//System.out.println("pwd1 ->" + currentDir.getName());
 		while(currentDir.getName().equals("/") == false)
 			{
 				currentDir = currentDir.getParentDir();
-				System.out.println("pwd ->" + currentDir.getName());
+				//System.out.println("pwd ->" + currentDir.getName());
 				absolutePath = currentDir.getName()+"/"+absolutePath;
 			}
 			
@@ -185,7 +194,11 @@ abstract  class Operations {
 	{
 		Directory dir = traverse(path,currentDir,0);
 
-		if(dir != null)
+		if(dir.getName().equals("/"))
+		{
+			System.out.println("ERR: UNABLE TO DELETE ROOT Directory");
+		}
+		else if(dir != null)
 		{
 			String dirName = dir.getName();
 			String currentDir_Path = pwd(currentDir);
@@ -193,7 +206,27 @@ abstract  class Operations {
 			if(currentDir_Path.indexOf(targetDir_Path) == -1)
 			{
 				dir = dir.getParentDir();
-				dir.removeChildDir(dirName);
+				
+				if(dir.removeChildDir(dirName))
+					System.out.println("SUCC: DELETED "+dirName);
+				else
+					System.out.println("ERR: UNABLE TO DELETE "+dirName);
+				
+				return currentDir;
+			}
+			else
+			{
+				Directory root = currentDir.getRootDir();
+				
+				dir = dir.getParentDir();
+				
+				if(dir.removeChildDir(dirName))
+					System.out.println("SUCC: DELETED "+dirName);
+				else
+					System.out.println("ERR: UNABLE TO DELETED "+dirName);
+				
+				
+				return root;
 			}
 		}
 		return currentDir;
@@ -217,7 +250,7 @@ abstract  class Operations {
 		{
 			currentDir = currentDir.getRootDir();
 			path = path.substring(1, path.length());
-			System.out.println("pathRootT->"+path);
+			//System.out.println("pathRootT->"+path);
 		}
 		
 		//splitting path in parts "/<path>/<path>/<path>"
@@ -225,21 +258,21 @@ abstract  class Operations {
 		int length = dirName.length;
 		
 		Directory dir = currentDir;
-		System.out.println("Traversing on Path -> "+path);
+		//System.out.println("Traversing on Path -> "+path);
 		
 		for(int i = 0;i< length-pos; i++)
 		{
-			System.out.println("Enter dirName ->"+dirName[i]+" "+dir.getName());
+			//System.out.println("Enter dirName ->"+dirName[i]+" "+dir.getName());
 			if(dirName[i].equals(""))
 			{
 				break;
 			}
 			else if(dirName[i].equals(".."))
 			{
-				System.out.println("getting parent of "+dir.getName()+" - "+dir.getParentDir());
+				//System.out.println("getting parent of "+dir.getName()+" - "+dir.getParentDir());
 				if(dir.getParentDir() != null)
 				{
-					System.out.println("condtion");
+					//System.out.println("condtion");
 					dir = dir.getParentDir();
 				}			
 			}
@@ -247,7 +280,7 @@ abstract  class Operations {
 			{
 				//checking if child exist or not 
 				Directory childDir = dir.getChildDir(dirName[i]);
-				System.out.println("jhes"+dirName[i]);
+				//System.out.println("jhes"+dirName[i]);
 				
 				if(childDir == null)
 				{
@@ -261,7 +294,7 @@ abstract  class Operations {
 					dir = childDir;
 				}
 			}
-			System.out.println("Exit dirName ->"+dirName[i]+" "+dir.getName()+"  Child List"+dir.getChildList());
+			//System.out.println("Exit dirName ->"+dirName[i]+" "+dir.getName()+"  Child List"+dir.getChildList());
 		}
 		return dir;
 	}

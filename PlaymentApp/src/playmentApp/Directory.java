@@ -38,7 +38,7 @@ public class Directory{
 		else
 		{
 			Directory dir = new Directory(name);
-			//Connecting parent directory
+			//Linking with  parent directory
 			dir.parentDirectory = this;
 			
 			this.childDirectory.put(name, dir);

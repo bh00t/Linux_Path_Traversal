@@ -15,7 +15,11 @@ public class test {
 		while(true)
 		{
 			input = br.readLine();
-			currentDir = Operations.command(input,currentDir);
+			if(input.equalsIgnoreCase("exit") == false)
+				currentDir = Operations.command(input,currentDir);
+			else
+				break;
 		}
+		System.out.println("Exited");
 	}
 }
